@@ -62,3 +62,7 @@ For instance, if you provide `job_id: '123'` as an input to the Action, it will 
 ### Support
 
 For support or any questions about this Action, please [open an issue](https://github.com/BlackHat786000/set-async-job-status/issues) in the GitHub repository.
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/BlackHat786000/set-async-job-status/blob/main/LICENSE) file for details.
