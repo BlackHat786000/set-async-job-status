@@ -1,4 +1,4 @@
-name: 'Set Async GHA Job Status'
+name: 'Set Async GitHub Workflow Job Status'
 description: 'Set github actions workflow job status as success or failure based on kafka event message'
 inputs:
   kafka_broker:
