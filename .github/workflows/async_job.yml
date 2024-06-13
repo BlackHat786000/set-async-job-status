@@ -6,7 +6,7 @@ on:
 
 jobs:
   set_aync_job_status:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     name: async_job
     steps:
       - name: Generate random job ID
