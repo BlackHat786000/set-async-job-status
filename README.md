@@ -38,12 +38,42 @@ with:
   - **Required:** No
   - **Default:** 10
 
+- **`authentication`**:
+  - **Description:** Specifies the security protocol used to communicate with the Kafka broker.
+  - **Required:** No
+  - **Default:** None
+
+- **`sasl_username`**:
+  - **Description:** Username for SASL authentication.
+  - **Required:** Only if authentication is set to `SASL PLAIN`
+
+- **`sasl_password`**:
+  - **Description:** Password corresponding to the SASL username.
+  - **Required:** Only if authentication is set to `SASL PLAIN`
+
+- **`ssl_enabled`**:
+  - **Description:** Enable SSL connection to Kafka broker.
+  - **Required:** No
+  - **Default:** false
+
+- **`ca_path`**:
+  - **Description:** PEM formatted file that contains a CA certificate to be used for validation
+  - **Required:** Only if ssl_enabled is set to true
+
+- **`client_cert`**:
+  - **Description:** PEM formatted certificate chain file to be used for SSL client authentication
+  - **Required:** No
+
+- **`client_key`**:
+  - **Description:** PEM formatted file that contains your private key to be used for SSL client authentication
+  - **Required:** No
+
 ### Kafka Message Format
 
 The messages sent to the Kafka topic should be in JSON format and contain at least the following two key-value pairs:
 
 - **`job_id`**: Represents the unique identifier of the job within the GitHub Actions workflow.
-- **`job_status`**: Indicates the status of the job, which could be either "SUCCESS" or "FAILED".
+- **`job_status`**: Indicates the status of the job, which could be either `SUCCESS` or `FAILED`.
 
 Example message:
 ```json
