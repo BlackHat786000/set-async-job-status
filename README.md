@@ -65,7 +65,7 @@ with:
 
 - **`ca_path`**:
   - **Description:** PEM formatted file that contains a CA certificate to be used for validation
-  - **Required:** Only if ssl_enabled is set to true
+  - **Required:** No
 
 - **`client_cert`**:
   - **Description:** PEM formatted certificate chain file to be used for SSL client authentication
