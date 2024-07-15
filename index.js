@@ -110,7 +110,6 @@ function processMessage(message) {
         }
     } catch (error) {
         core.setFailed(`[ERROR] Error while processing message: ${error.message}`);
-        process.exit(1);
     }
 }
 
