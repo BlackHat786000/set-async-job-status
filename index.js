@@ -85,7 +85,13 @@ async function run() {
 
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
-                const value = message.value.toString('utf8');
+                let value;
+				try {
+					value = message.value.toString('utf8');
+				} catch (error) {
+					core.setFailed(`[ERROR] Error while converting message to string: ${error.message}`);
+					return;
+				}
                 console.log('[DEBUG]', topic, partition, message.offset, value);
                 processMessage(value);
             },
