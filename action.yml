@@ -40,9 +40,9 @@ inputs:
     description: 'Kafka consumer group ID'
     required: false
   group_prefix:
-    description: 'Prefix to be used to generate random consumer group ID like <group_prefix>-<random_uuid>'
+    description: 'Prefix to be used to generate random consumer group ID like <group_prefix><random_uuid>'
     required: false
-    default: 'group'
+    default: 'group-'
 runs:
   using: 'node20'
   main: 'index.js'

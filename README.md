@@ -80,9 +80,9 @@ with:
   - **Required:** No
 
 - **`group_prefix`**:
-  - **Description:** Prefix to be used to generate random consumer group ID like <group_prefix>-<random_uuid>
+  - **Description:** Prefix to be used to generate random consumer group ID like <group_prefix><random_uuid>
   - **Required:** No
-  - **Default:** 'group'
+  - **Default:** 'group-'
 
 ### Kafka Message Format
 

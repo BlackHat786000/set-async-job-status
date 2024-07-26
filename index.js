@@ -72,7 +72,7 @@ if (authentication && authentication.toUpperCase() === 'SASL PLAIN') {
 
 const kafka = new Kafka(kafkaConfig);
 const consumer = kafka.consumer({
-    groupId: group_id || `${group_prefix}-${uuidv4()}`
+    groupId: group_id || `${group_prefix}${uuidv4()}`
 });
 
 async function run() {
