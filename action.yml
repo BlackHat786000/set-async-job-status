@@ -40,7 +40,7 @@ inputs:
     description: 'Kafka consumer group ID'
     required: false
   group_prefix:
-    description: 'Prefix for the Kafka consumer group ID if group_id is not provided'
+    description: 'Prefix to be used to generate random consumer group ID like <group_prefix>-<random_uuid>'
     required: false
     default: 'group'
 runs:
