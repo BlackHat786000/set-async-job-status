@@ -11,15 +11,15 @@ Create a workflow *.yml file in your repositories .github/workflows directory.
 ### Example Usage
 
 ```yaml
-uses: BlackHat786000/set-async-job-status@v2.0
+uses: BlackHat786000/set-async-job-status@v3.0
 with:
   kafka_broker: '12.34.56.78:9092'
   topic_name: 'myJsonTopic'
   job_id: '123456'
   listener_timeout: 5
   authentication: 'SASL PLAIN'
-  sasl_username: 'username'
-  sasl_password: 'password'
+  sasl_username: ${{ secrets.username }}
+  sasl_password: ${{ secrets.password }}
   ssl_enabled: true
   ca_path: '/my/custom/ca.crt'
   client_cert: '/my/custom/client-cert.pem'
@@ -74,6 +74,15 @@ with:
 - **`client_key`**:
   - **Description:** PEM formatted file that contains your private key to be used for SSL client authentication
   - **Required:** No
+
+- **`group_id`**:
+  - **Description:** Kafka consumer group ID
+  - **Required:** No
+
+- **`group_prefix`**:
+  - **Description:** Prefix for the Kafka consumer group ID if group_id is not provided
+  - **Required:** No
+  - **Default:** 'group'
 
 ### Kafka Message Format
 

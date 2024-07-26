@@ -6,6 +6,7 @@ const fs = require('fs');
 let kafka_broker, topic_name, job_id, listener_timeout;
 let authentication, sasl_username, sasl_password;
 let ssl_enabled, ca_path, client_cert, client_key;
+let group_id, group_prefix;
 
 try {
     kafka_broker = core.getInput('kafka_broker');
@@ -14,6 +15,8 @@ try {
     listener_timeout = parseInt(core.getInput('listener_timeout'), 10);
     authentication = core.getInput('authentication');
     ssl_enabled = core.getInput('ssl_enabled') === 'true';
+	group_id = core.getInput('group_id');
+    group_prefix = core.getInput('group_prefix');
 
     if (!kafka_broker || !topic_name || !job_id) {
         throw new Error('kafka_broker, topic_name, and job_id are mandatory action inputs and cannot be empty.');
@@ -69,7 +72,7 @@ if (authentication && authentication.toUpperCase() === 'SASL PLAIN') {
 
 const kafka = new Kafka(kafkaConfig);
 const consumer = kafka.consumer({
-    groupId: `group-${uuidv4()}`
+    groupId: group_id || `${group_prefix}-${uuidv4()}`
 });
 
 async function run() {
