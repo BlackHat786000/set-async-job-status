@@ -1,6 +1,5 @@
 const core = require('@actions/core');
 const { Kafka } = require('kafkajs');
-const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
 let kafka_broker, topic_name, job_id, listener_timeout;
@@ -72,7 +71,7 @@ if (authentication && authentication.toUpperCase() === 'SASL PLAIN') {
 
 const kafka = new Kafka(kafkaConfig);
 const consumer = kafka.consumer({
-    groupId: group_id || `${group_prefix}${uuidv4()}`
+    groupId: group_id || `${group_prefix}${job_id}`
 });
 
 async function run() {
