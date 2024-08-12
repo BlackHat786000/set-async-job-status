@@ -130,9 +130,9 @@ jinja_conditional: |
 
 ### Role of Action Input `job_id` (Optional)
 
-When using the GitHub Action, you can optionally provide a specific `job_id` as an input. This `job_id` serves as a reference point for the Action to match against the `job_id` present in the incoming Kafka messages. Based on this match, the Action determines the status (`job_status`) of the associated job.
+When using the GitHub Action, you can optionally provide a specific `job_id` as an input. This `job_id` serves as a reference point for the Action to match against the `job_id` present in the incoming Kafka messages. Based on this match, the Action determines the job status (SUCCESS/FAILED) of the associated job.
 
-For instance, if you provide `job_id: '123'` as an input to the Action, it will look for messages in the Kafka topic where the `job_id` matches '123'. If it finds a matching message, it will use the `job_status` value from that message to update the status of the corresponding job in the GitHub Actions workflow.
+For instance, if you provide `job_id: '123'` as an input to the Action, it will look for messages in the Kafka topic where the `job_id` matches '123'. If it finds a matching message, it will use the `job_status` value (`SUCCESS` or `FAILED`) from that message to update the status of the corresponding job in the GitHub Actions workflow.
 
 ### Support
 
