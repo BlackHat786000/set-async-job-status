@@ -15,7 +15,6 @@ uses: BlackHat786000/set-async-job-status@v5.0
 with:
   kafka_broker: '12.34.56.78:9092'
   topic_name: 'myJsonTopic'
-  job_id: '123456'
   listener_timeout: 5
   authentication: 'SASL PLAIN'
   sasl_username: ${{ secrets.username }}
@@ -24,6 +23,8 @@ with:
   ca_path: '/my/custom/ca.crt'
   client_cert: '/my/custom/client-cert.pem'
   client_key: '/my/custom/client-key.pem'
+  success_when: event.some_id == 'foo' and event.any_status == 'completed'
+  fail_when: event.another_id >= 123456 and event.example_status == false
 ```
 
 ### Inputs
