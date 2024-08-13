@@ -123,8 +123,6 @@ jinja_conditional: |
             SUCCESS // return `SUCCESS` to mark job as success
             {% elif event.my_id == 'joe' and event.task_status == 'failure' %}
             FAILED // return `FAILED` to mark job as failure
-            {% else %}
-            CONTINUE // return any string other than `SUCCESS` and `FAILED` to continue to listen
             {% endif %}
 ```
 
