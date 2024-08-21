@@ -11,7 +11,7 @@ Create a workflow *.yml file in your repositories .github/workflows directory.
 ### Example Usage
 
 ```yaml
-uses: BlackHat786000/set-async-job-status@v5.0
+uses: BlackHat786000/set-async-job-status@v5.1
 with:
   kafka_broker: '12.34.56.78:9092'
   topic_name: 'myJsonTopic'
@@ -24,7 +24,6 @@ with:
   client_cert: '/my/custom/client-cert.pem'
   client_key: '/my/custom/client-key.pem'
   success_when: event.some_id == 'foo' and event.any_status == 'completed'
-  fail_when: event.another_id >= 123456 and event.example_status == false
 ```
 
 ### Inputs
@@ -81,7 +80,7 @@ with:
   - **Required:** No
 
 - **`group_prefix`**:
-  - **Description:** Prefix to be used to generate consumer group ID like <group_prefix><job_id> (if `job_id` not provided, random UUID is used as group_suffix)
+  - **Description:** Prefix to be used to generate consumer group ID like <group_prefix><workflow_run_id>/<job_name>
   - **Required:** No
   - **Default:** 'group-'
 
@@ -126,7 +125,7 @@ jinja_conditional: |
             {% endif %}
 ```
 
-### Role of Action Input `job_id` (Optional)
+### Role of Action Input `job_id` (Optional) (Not Recommended)
 
 When using the GitHub Action, you can optionally provide a specific `job_id` as an input. This `job_id` serves as a reference point for the Action to match against the `job_id` present in the incoming Kafka messages. Based on this match, the Action determines the job status (SUCCESS/FAILED) of the associated job.
 
