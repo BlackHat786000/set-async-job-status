@@ -56,7 +56,7 @@ outputs:
     description: 'JSON event message that marked job status as SUCCESS/FAILED'
 runs:
   using: 'node20'
-  main: 'index.js'
+  main: 'dist/index.js'
 branding:
   icon: 'check-circle'
   color: 'green'
