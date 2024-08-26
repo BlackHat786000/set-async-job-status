@@ -1,4 +1,5 @@
 name: 'Set Async GitHub Workflow Job Status'
+author: 'Udit Yadav <yadavudit786@gmail.com>'
 description: 'Set GitHub Actions workflow job status as success or failure based on Kafka event message'
 inputs:
   kafka_broker:
@@ -10,6 +11,7 @@ inputs:
   job_id:
     description: 'Action input `job_id` should match message-value.job_id to determine job status from message-value.job_status. message-value={"job_id":"123","job_status":"SUCCESS"||"FAILED"}'
     required: false
+    deprecationMessage: 'job_id is depreciated. Please use jinja_conditional or success_when to determine the job status'
   listener_timeout:
     description: 'Time in minutes for which listener will be actively waiting for target message'
     default: 10
@@ -38,16 +40,16 @@ inputs:
     description: 'Kafka consumer group ID'
     required: false
   group_prefix:
-    description: 'Prefix to be used to generate consumer group ID like <group_prefix><job_id> (if `job_id` not provided, random UUID is used as group_suffix)'
+    description: 'Prefix to be used to generate consumer group ID like <group_prefix><job_id>'
     default: 'group-'
   success_when:
-    description: 'Conditional expression that evaluates to `true` against the kafka message payload to mark job status as SUCCESS'
+    description: 'Conditional expression that evaluates to `true` to mark job status as SUCCESS'
     required: false
   fail_when:
-    description: 'Conditional expression against the kafka message payload to mark job status as FAILED. This option only has an effect if `success_when` is provided'
+    description: 'Conditional expression to mark job status as FAILED. This option only has an effect if `success_when` is provided'
     required: false
   jinja_conditional:
-    description: 'Jinja template that must return `SUCCESS` string or `FAILED` string against the kafka message payload to mark job status as SUCCESS/FAILED'
+    description: 'Conditional jinja template that must return `SUCCESS` string or `FAILED` string to mark job status as SUCCESS/FAILED'
     required: false
 outputs:
   json:
