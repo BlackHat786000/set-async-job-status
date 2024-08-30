@@ -85,6 +85,7 @@ const currentJobName = process.env.GITHUB_JOB;
 const group_suffix = `${workflowRunId}/${currentJobName}`;
 
 const kafka = new Kafka(kafkaConfig);
+const admin = kafka.admin();
 const consumer = kafka.consumer({
     groupId: group_id || `${group_prefix}${group_suffix}`
 });
@@ -186,7 +187,29 @@ function processJobEvent(event) {
 
 run();
 
-setTimeout(() => {
+setTimeout(async () => {
     core.info(`\u001b[31m[INFO] Listener timed out after waiting ${listener_timeout} minutes for target message, marked current running job status as ${STATUS_FAILED}.`);
+
+	// [EDGE SCENARIO] When new consumer with new consumer group times out without committing any offset
+	// and is restarted again, it processes messages from latest offset because of 'fromBeginning: false'
+	// Hence messages produced after timeout and before consumer restart are missed from being processed
+
+	// [EDGE SCENARIO FIX] Fetch and commit latest offset for each partition in given topic for consumer
+	try {
+		await admin.connect();
+		const topicOffsets = await admin.fetchTopicOffsets(topic_name);
+        core.debug(`Fetched topic offsets:\n${JSON.stringify(topicOffsets, null, 2)}`);
+		const offsetsToCommit = topicOffsets.map(({ partition, offset }) => ({
+            topic: topic_name,
+            partition,
+            offset: offset
+        }));
+		await consumer.commitOffsets(offsetsToCommit);
+		core.debug('Offsets committed successfully');
+		await admin.disconnect();
+	} catch(error) {
+		core.error(`[ERROR] Error while fetching and committing offsets: ${error.message}`);
+	}
+
     process.exit(1);
 }, listener_timeout * 60 * 1000);
