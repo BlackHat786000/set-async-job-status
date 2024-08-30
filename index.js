@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const { Kafka } = require('kafkajs');
 const fs = require('fs');
 const nunjucks = require('nunjucks');
+const EventEmitter = require('events');
 
 // Constants
 const EVENT_ID_KEY = 'job_id';
@@ -14,6 +15,8 @@ let authentication, sasl_username, sasl_password;
 let ssl_enabled, ca_path, client_cert, client_key;
 let group_id, group_prefix;
 let success_when, fail_when, jinja_conditional;
+
+const events = new EventEmitter();
 
 try {
     kafka_broker = core.getInput('kafka_broker', { required: true });
@@ -85,7 +88,6 @@ const currentJobName = process.env.GITHUB_JOB;
 const group_suffix = `${workflowRunId}/${currentJobName}`;
 
 const kafka = new Kafka(kafkaConfig);
-const admin = kafka.admin();
 const consumer = kafka.consumer({
     groupId: group_id || `${group_prefix}${group_suffix}`
 });
@@ -114,10 +116,10 @@ async function run() {
                       core.setOutput("json", value);
                       if (jobStatus === STATUS_SUCCESS) {
 						core.info(`\u001b[32m[INFO] Marked current running job status as ${jobStatus}.`);
-                        process.exit(0);
+                        events.emit('exit', 0);
                       } else {
 						core.info(`\u001b[31m[INFO] Marked current running job status as ${jobStatus}.`);
-                        process.exit(1);
+                        events.emit('exit', 1);
                       }
                     }
                 } catch (error) {
@@ -129,6 +131,17 @@ async function run() {
         core.setFailed(`[ERROR] Error while running the consumer: ${error.message}`);
         process.exit(1);
     }
+
+	await new Promise((resolve, reject) => {
+    const wrapUpAndExit = async (exitCode) => {
+      await consumer.stop();
+      await consumer.disconnect();
+	  process.exit(exitCode);
+      resolve(null);
+    }
+    events.on('exit', wrapUpAndExit);
+	});
+
 }
 
 function processMessage(message) {
@@ -196,9 +209,11 @@ setTimeout(async () => {
 
 	// [EDGE SCENARIO FIX] Fetch and commit latest offset for each partition in given topic for consumer
 	try {
+		const admin = kafka.admin();
 		await admin.connect();
 		const topicOffsets = await admin.fetchTopicOffsets(topic_name);
         core.debug(`Fetched topic offsets:\n${JSON.stringify(topicOffsets, null, 2)}`);
+		await admin.disconnect();
 		const offsetsToCommit = topicOffsets.map(({ partition, offset }) => ({
             topic: topic_name,
             partition,
@@ -206,10 +221,9 @@ setTimeout(async () => {
         }));
 		await consumer.commitOffsets(offsetsToCommit);
 		core.debug('Offsets committed successfully');
-		await admin.disconnect();
+		events.emit('exit', 1);
 	} catch(error) {
 		core.error(`[ERROR] Error while fetching and committing offsets: ${error.message}`);
 	}
 
-    process.exit(1);
 }, listener_timeout * 60 * 1000);
